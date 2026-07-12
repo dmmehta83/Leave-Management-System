@@ -1,0 +1,128 @@
+package com.leavemanagement.Leave.Management.system.entity;
+
+import java.time.LocalDate;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="leave_requests")
+public class LeaveRequest {
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long id;
+	
+	private LocalDate startdate;
+	private LocalDate enddate;
+	
+	private String reason;
+	
+	private String status;
+	
+	@ManyToOne
+	@JoinColumn(name="employee_id")
+	private Employee employee;
+	
+	
+	@ManyToOne
+	@JoinColumn(name="leave_type_id")
+	private LeaveType leavetype;
+
+
+	public LeaveRequest(Long id, LocalDate startdate, LocalDate enddate, String reason, String status,
+			Employee employee, LeaveType leavetype) {
+		
+		this.id = id;
+		this.startdate = startdate;
+		this.enddate = enddate;
+		this.reason = reason;
+		this.status = status;
+		this.employee = employee;
+		this.leavetype = leavetype;
+	}
+
+
+	public LeaveRequest() {
+		
+	}
+
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
+	public LocalDate getStartdate() {
+		return startdate;
+	}
+
+
+	public void setStartdate(LocalDate startdate) {
+		this.startdate = startdate;
+	}
+
+
+	public LocalDate getEnddate() {
+		return enddate;
+	}
+
+
+	public void setEnddate(LocalDate enddate) {
+		this.enddate = enddate;
+	}
+
+
+	public String getReason() {
+		return reason;
+	}
+
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+
+	public LeaveType getLeavetype() {
+		return leavetype;
+	}
+
+
+	public void setLeavetype(LeaveType leavetype) {
+		this.leavetype = leavetype;
+	}
+	
+	
+	
+	
+}
