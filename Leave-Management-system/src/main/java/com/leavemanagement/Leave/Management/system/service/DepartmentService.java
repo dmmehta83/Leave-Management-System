@@ -2,13 +2,15 @@ package com.leavemanagement.Leave.Management.system.service;
 
 import java.util.List;
 
-import com.leavemanagement.Leave.Management.system.entity.Department;
+import com.leavemanagement.Leave.Management.system.dto.DepartmentRequestDTO;
+import com.leavemanagement.Leave.Management.system.dto.DepartmentResponseDTO;
+
 
 public interface DepartmentService {
 
-Department saveDepartment(Department department);
-List<Department> getAllDepartments();
-Department getDepartmentById(Long id);
-Department updateDepartment(Long id,Department department);
+DepartmentResponseDTO saveDepartment(DepartmentRequestDTO department);
+List<DepartmentResponseDTO> getAllDepartments();
+DepartmentResponseDTO getDepartmentById(Long id);
+DepartmentResponseDTO updateDepartment(Long id,DepartmentRequestDTO department);
 void deleteDepartment(Long id);
 }

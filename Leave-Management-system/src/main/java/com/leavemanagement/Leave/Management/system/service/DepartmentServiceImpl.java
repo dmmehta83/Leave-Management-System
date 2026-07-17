@@ -1,10 +1,14 @@
 package com.leavemanagement.Leave.Management.system.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.leavemanagement.Leave.Management.system.dto.DepartmentRequestDTO;
+import com.leavemanagement.Leave.Management.system.dto.DepartmentResponseDTO;
 import com.leavemanagement.Leave.Management.system.entity.Department;
+import com.leavemanagement.Leave.Management.system.mapper.DepartmentMapper;
 import com.leavemanagement.Leave.Management.system.repository.DepartmentRepository;
 
 @Service
@@ -17,35 +21,62 @@ public class DepartmentServiceImpl implements DepartmentService {
 		this.repository = repository;
 	}
 
+	
+	
 	@Override
-	public Department saveDepartment(Department department) {
+	public DepartmentResponseDTO saveDepartment(DepartmentRequestDTO requestDTO) {
+
+	    Department department = DepartmentMapper.toEntity(requestDTO);
+
+	    Department savedDepartment = repository.save(department);
+
+	    return DepartmentMapper.toResponseDTO(savedDepartment);
+	}
+	
+	
+	
+	
+	
+
+	@Override
+	public List<DepartmentResponseDTO> getAllDepartments() {
 		
-		return repository.save(department);
+		List<Department> departments=repository.findAll();
+		List<DepartmentResponseDTO> responseList = new ArrayList<>();
+		
+		for (Department department : departments) {
+	        responseList.add(DepartmentMapper.toResponseDTO(department));
+	    }
+
+	    return responseList;
 	}
 
 	@Override
-	public List<Department> getAllDepartments() {
+	public DepartmentResponseDTO getDepartmentById(Long id) {
 		
-		return repository.findAll();
-	}
+		Department department=repository.findById(id).orElse(null);
+		if (department == null) {
+	        return null;
+	    }
 
-	@Override
-	public Department getDepartmentById(Long id) {
-		
-		return repository.findById(id).orElse(null);
+	    return DepartmentMapper.toResponseDTO(department);
 				
 	}
 
 	@Override
-	public Department updateDepartment(Long id, Department department) {
+	public  DepartmentResponseDTO updateDepartment(Long id, DepartmentRequestDTO requestDTO) {
 		Department existing=repository.findById(id).orElse(null);
 		
-		if (existing != null) {
-            existing.setDepartmentName(department.getDepartmentName());
-            return repository.save(existing);
+		if (existing == null) {
+			return null;    
         }
 
-        return null;
+		existing.setDepartmentName(requestDTO.getDepartmentName());
+        
+		Department updatedDepartment = repository.save(existing);
+
+	    return DepartmentMapper.toResponseDTO(updatedDepartment);
+        
 		
 	}
 
