@@ -16,6 +16,8 @@ import com.leavemanagement.Leave.Management.system.dto.DepartmentResponseDTO;
 import com.leavemanagement.Leave.Management.system.entity.Department;
 import com.leavemanagement.Leave.Management.system.service.DepartmentService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("api/departments")
 public class DepartmentController {
@@ -29,7 +31,7 @@ public DepartmentController(DepartmentService service) {
 
 @PostMapping
 public DepartmentResponseDTO saveDepartment(
-        @RequestBody DepartmentRequestDTO requestDTO) {
+        @Valid @RequestBody DepartmentRequestDTO requestDTO) {
 
     return service.saveDepartment(requestDTO);
 }
@@ -48,7 +50,7 @@ public  DepartmentResponseDTO getDepartment(@PathVariable Long id) {
 @PutMapping("/{id}")
 public DepartmentResponseDTO updateDepartment(
         @PathVariable Long id,
-        @RequestBody DepartmentRequestDTO requestDTO) {
+        @Valid @RequestBody DepartmentRequestDTO requestDTO) {
 
     return service.updateDepartment(id, requestDTO);
 }

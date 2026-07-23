@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.leavemanagement.Leave.Management.system.dto.DepartmentRequestDTO;
 import com.leavemanagement.Leave.Management.system.dto.DepartmentResponseDTO;
 import com.leavemanagement.Leave.Management.system.entity.Department;
+import com.leavemanagement.Leave.Management.system.exception.ResourceNotFoundException;
 import com.leavemanagement.Leave.Management.system.mapper.DepartmentMapper;
 import com.leavemanagement.Leave.Management.system.repository.DepartmentRepository;
 
@@ -54,7 +55,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 	@Override
 	public DepartmentResponseDTO getDepartmentById(Long id) {
 		
-		Department department=repository.findById(id).orElse(null);
+		Department department=repository.findById(id)
+		          .orElseThrow(() ->
+	              new ResourceNotFoundException(
+	                  "Department not found with id: " + id));
+		
 		if (department == null) {
 	        return null;
 	    }
@@ -65,7 +70,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public  DepartmentResponseDTO updateDepartment(Long id, DepartmentRequestDTO requestDTO) {
-		Department existing=repository.findById(id).orElse(null);
+		Department existing=repository.findById(id)
+		          .orElseThrow(() ->
+	              new ResourceNotFoundException(
+	                  "Department not found with id: " + id));
 		
 		if (existing == null) {
 			return null;    
@@ -82,6 +90,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public void deleteDepartment(Long id) {
+		Department department = repository.findById(id)
+		        .orElseThrow(() -> new ResourceNotFoundException(
+		                "Department not found with id : " + id));
+
+		
 		repository.deleteById(id);
 		
 		
