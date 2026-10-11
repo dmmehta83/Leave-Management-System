@@ -31,3 +31,22 @@ build/
 
 ### VS Code ###
 .vscode/
+/.apt_generated_tests/
+
+
+### Environment variables and secrets ###
+.env
+.env.*
+!.env.example
+
+### Local application configuration ###
+application-local.properties
+application-local.yml
+application-local.yaml
+
+### Private keys and certificates ###
+*.pem
+*.key
+
+### Logs ###
+*.log

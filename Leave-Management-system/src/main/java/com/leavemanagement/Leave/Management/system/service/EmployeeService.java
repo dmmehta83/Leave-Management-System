@@ -2,17 +2,19 @@ package com.leavemanagement.Leave.Management.system.service;
 
 import java.util.List;
 
-import com.leavemanagement.Leave.Management.system.entity.Employee;
+import com.leavemanagement.Leave.Management.system.dto.EmployeeRequestDTO;
+import com.leavemanagement.Leave.Management.system.dto.EmployeeResponseDTO;
+
 
 public interface EmployeeService {
 
-	Employee saveEmployee(Employee employee);
+	EmployeeResponseDTO saveEmployee(EmployeeRequestDTO dto);
 
-    List<Employee> getAllEmployees();
+    List<EmployeeResponseDTO> getAllEmployees();
 
-    Employee getEmployeeById(Long id);
+    EmployeeResponseDTO getEmployeeById(Long id);
 
-    Employee updateEmployee(Long id, Employee employee);
+    EmployeeResponseDTO updateEmployee(Long id, EmployeeRequestDTO dto);
 
     void deleteEmployee(Long id);
 }

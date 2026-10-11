@@ -3,7 +3,7 @@ package com.leavemanagement.Leave.Management.system.dto;
 public class DepartmentResponseDTO {
 
     private Long id;
-
+    
     private String departmentName;
 
     public DepartmentResponseDTO() {
@@ -29,4 +29,6 @@ public class DepartmentResponseDTO {
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
     }
+    
+    
 }

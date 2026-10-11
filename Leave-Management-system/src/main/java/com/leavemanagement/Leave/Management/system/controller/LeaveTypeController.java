@@ -2,6 +2,8 @@ package com.leavemanagement.Leave.Management.system.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.leavemanagement.Leave.Management.system.entity.LeaveType;
+import com.leavemanagement.Leave.Management.system.dto.LeaveTypeRequestDTO;
+import com.leavemanagement.Leave.Management.system.dto.LeaveTypeResponseDTO;
+
 import com.leavemanagement.Leave.Management.system.service.LeaveTypeService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/leave-types")
@@ -25,29 +31,37 @@ public class LeaveTypeController {
 	    }
 
 	    @PostMapping
-	    public LeaveType createLeaveType(@RequestBody LeaveType leaveType) {
-	        return service.saveLeaveType(leaveType);
+	    public ResponseEntity<LeaveTypeResponseDTO> createLeaveType(@Valid @RequestBody LeaveTypeRequestDTO dto) {
+	    	return ResponseEntity
+	    	        .status(HttpStatus.CREATED)
+	    	        .body(service.saveLeaveType(dto));
 	    }
 
 	    @GetMapping
-	    public List<LeaveType> getAllLeaveTypes() {
-	        return service.getAllLeaveTypes();
+	    public ResponseEntity<List<LeaveTypeResponseDTO>> getAllLeaveTypes() {
+	        return ResponseEntity
+	        		 .status(HttpStatus.OK)
+	        		.body(service.getAllLeaveTypes());
 	    }
 
 	    @GetMapping("/{id}")
-	    public LeaveType getLeaveType(@PathVariable Long id) {
-	        return service.getLeaveTypeById(id);
+	    public ResponseEntity<LeaveTypeResponseDTO> getLeaveType(@PathVariable Long id) {
+	        return ResponseEntity.status(HttpStatus.OK).
+	        		body(service.getLeaveTypeById(id));
 	    }
+	    
 
 	    @PutMapping("/{id}")
-	    public LeaveType updateLeaveType(@PathVariable Long id,
-	                                       @RequestBody LeaveType leaveType) {
-	        return service.updateLeaveType(id, leaveType);
+	    public ResponseEntity<LeaveTypeResponseDTO> updateLeaveType(@PathVariable Long id,
+	                                       @Valid @RequestBody LeaveTypeRequestDTO dto) {
+	        return ResponseEntity.status(HttpStatus.OK).body(service.updateLeaveType(id, dto));
+	        		
 	    }
 
 	    @DeleteMapping("/{id}")
-	    public void deleteLeaveType(@PathVariable Long id) {
-	        service.deleteLeaveType(id);
+	    public ResponseEntity<Void> deleteLeaveType(@PathVariable Long id) {
+	    	service.deleteLeaveType(id);
+	    	return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	    }
 	
 

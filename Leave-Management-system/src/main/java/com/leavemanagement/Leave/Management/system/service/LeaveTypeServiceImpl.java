@@ -4,8 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.leavemanagement.Leave.Management.system.dto.LeaveTypeRequestDTO;
+import com.leavemanagement.Leave.Management.system.dto.LeaveTypeResponseDTO;
 import com.leavemanagement.Leave.Management.system.entity.Employee;
 import com.leavemanagement.Leave.Management.system.entity.LeaveType;
+import com.leavemanagement.Leave.Management.system.exception.ResourceNotFoundException;
+import com.leavemanagement.Leave.Management.system.mapper.LeaveTypeMapper;
 import com.leavemanagement.Leave.Management.system.repository.LeaveTypeRepository;
 @Service
 public class LeaveTypeServiceImpl implements LeaveTypeService {
@@ -19,39 +23,61 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	}
 
 	@Override
-	public LeaveType saveLeaveType(LeaveType leaveType) {
+	public LeaveTypeResponseDTO saveLeaveType(LeaveTypeRequestDTO dto) {
 		
-		return repository.save(leaveType);
+		LeaveType leaveType=LeaveTypeMapper.toEntity(dto);
+		LeaveType savedLeaveType=repository.save(leaveType);
+		LeaveTypeResponseDTO resdto=LeaveTypeMapper.toResponseDTO(savedLeaveType);
+		return resdto;
 	}
 
 	@Override
-	public List<LeaveType> getAllLeaveTypes() {
+	public List<LeaveTypeResponseDTO> getAllLeaveTypes() {
 		
-		return repository.findAll();
+		List<LeaveType> leaveType=repository.findAll();
+		
+		return leaveType.stream().map(LeaveTypeMapper::toResponseDTO).toList();
 	}
 
 	@Override
-	public LeaveType getLeaveTypeById(Long id) {
-		
-		return repository.findById(id).orElse(null);
+	public LeaveTypeResponseDTO getLeaveTypeById(Long id) {
+
+	    LeaveType leaveType = repository.findById(id)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Leave Type not found with id : " + id));
+
+	    return LeaveTypeMapper.toResponseDTO(leaveType);
 	}
 
 	@Override
-	public LeaveType updateLeaveType(Long id, LeaveType leaveType) {
-		LeaveType existing=repository.findById(id).orElse(null);
-		
-		if (existing != null) {
-            existing.setLeaveName(leaveType.getLeaveName());
-            return repository.save(existing);
-        }
-		return null;
+	public LeaveTypeResponseDTO updateLeaveType(
+	        Long id,
+	        LeaveTypeRequestDTO dto) {
+
+	    LeaveType existing = repository.findById(id)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Leave Type not found with id : " + id));
+
+	    existing.setLeaveName(dto.getLeaveName());
+
+	    existing.setMaxDays(dto.getMaxDaysAllowed());
+
+	    LeaveType updated = repository.save(existing);
+
+	    return LeaveTypeMapper.toResponseDTO(updated);
 	}
 
 	@Override
 	public void deleteLeaveType(Long id) {
-		
-		repository.deleteById(id);
-		
+
+	    LeaveType leaveType = repository.findById(id)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Leave Type not found with id : " + id));
+
+	    repository.delete(leaveType);
 	}
 
 }

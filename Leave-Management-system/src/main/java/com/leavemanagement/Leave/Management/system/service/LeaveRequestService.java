@@ -2,17 +2,19 @@ package com.leavemanagement.Leave.Management.system.service;
 
 import java.util.List;
 
-import com.leavemanagement.Leave.Management.system.entity.LeaveRequest;
+import com.leavemanagement.Leave.Management.system.dto.LeaveRequestRequestDTO;
+import com.leavemanagement.Leave.Management.system.dto.LeaveRequestResponseDTO;
+
 
 public interface LeaveRequestService {
 
-	LeaveRequest saveLeaveRequest(LeaveRequest leaveRequest);
+	LeaveRequestResponseDTO saveLeaveRequest(LeaveRequestRequestDTO dto);
 	
-	List<LeaveRequest> getAllLeaveRequest();
+	List<LeaveRequestResponseDTO> getAllLeaveRequest();
 	
-	LeaveRequest getLeaveRequestById(Long id);
+	LeaveRequestResponseDTO getLeaveRequestById(Long id);
 	
-	LeaveRequest updateLeaveRequest(Long id, LeaveRequest leaveRequest);
+	LeaveRequestResponseDTO updateLeaveRequest(Long id, LeaveRequestRequestDTO dto);
 	
 	void deleteLeaveRequest(Long id);
 }

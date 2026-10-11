@@ -2,18 +2,20 @@ package com.leavemanagement.Leave.Management.system.service;
 
 import java.util.List;
 
-import com.leavemanagement.Leave.Management.system.entity.LeaveType;
+import com.leavemanagement.Leave.Management.system.dto.LeaveTypeRequestDTO;
+import com.leavemanagement.Leave.Management.system.dto.LeaveTypeResponseDTO;
+
 
 public interface LeaveTypeService {
 
 	
-	LeaveType saveLeaveType(LeaveType leaveType);
+	LeaveTypeResponseDTO saveLeaveType(LeaveTypeRequestDTO dto);
 
-    List<LeaveType> getAllLeaveTypes();
+    List<LeaveTypeResponseDTO> getAllLeaveTypes();
 
-    LeaveType getLeaveTypeById(Long id);
+    LeaveTypeResponseDTO getLeaveTypeById(Long id);
 
-    LeaveType updateLeaveType(Long id, LeaveType leaveType);
+    LeaveTypeResponseDTO updateLeaveType(Long id, LeaveTypeRequestDTO dto);
 
     void deleteLeaveType(Long id);
 }
