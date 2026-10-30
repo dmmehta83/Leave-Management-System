@@ -25,10 +25,13 @@ public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 	public SecurityConfig(
-	        JwtAuthenticationFilter jwtAuthenticationFilter) {
+	        JwtAuthenticationFilter jwtAuthenticationFilter,
+	        CustomAuthenticationEntryPoint authenticationEntryPoint) {
 
 	    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+	    this.authenticationEntryPoint = authenticationEntryPoint;
 	}
 	
 	@Bean
@@ -67,13 +70,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
+    	http
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session ->
-        session.sessionCreationPolicy(
+            session.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS
+            )
         )
-)
+        .exceptionHandling(exception -> exception
+            .authenticationEntryPoint(authenticationEntryPoint)
+        )
         .authorizeHttpRequests(auth -> auth
         	    .requestMatchers("/api/auth/**").permitAll()
         	    .requestMatchers("/api/departments/**").hasRole("ADMIN")

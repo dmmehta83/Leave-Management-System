@@ -13,6 +13,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import io.jsonwebtoken.JwtException;
 
 @Component
 public class JwtAuthenticationFilter
@@ -38,6 +39,7 @@ public class JwtAuthenticationFilter
 
         final String authHeader =
                 request.getHeader("Authorization");
+        System.out.println("DEBUG Authorization header: " + (authHeader == null ? "MISSING" : "PRESENT"));
 
         if (authHeader == null ||
                 !authHeader.startsWith("Bearer ")) {
@@ -47,40 +49,69 @@ public class JwtAuthenticationFilter
         }
 
         final String jwt = authHeader.substring(7);
-
-        final String username =
-                jwtService.extractUsername(jwt);
         
 
-        if (username != null &&
-                SecurityContextHolder.getContext()
-                        .getAuthentication() == null) {
+        try {
 
-            UserDetails userDetails =
-                    userDetailsService.loadUserByUsername(username);
-           
+            final String username = jwtService.extractUsername(jwt);
+            System.out.println("DEBUG Extracted JWT username: " + username);
 
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-            	
+            if (username != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authenticationToken);
+                UserDetails userDetails =
+                        userDetailsService.loadUserByUsername(username);
+                
                 System.out.println(
-                        "JWT authentication set: "
-                        + SecurityContextHolder.getContext()
-                                .getAuthentication()
-                                .isAuthenticated()
-                );
-            }
-        }
+                	    "DEBUG User authorities: " + userDetails.getAuthorities()
+                	);
 
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+
+                	System.out.println("DEBUG JWT is valid");
+                	UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authenticationToken);
+                    System.out.println(
+                    	    "DEBUG Authentication set: " +
+                    	    SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+                    	);
+                    
+                }
+                else {
+                    System.out.println("DEBUG JWT is invalid");
+                }
+            }
+
+        } catch (JwtException | IllegalArgumentException e) {
+
+            System.out.println(
+                "DEBUG: JWT exception caught: "
+                + e.getClass().getSimpleName()
+            );
+
+            SecurityContextHolder.clearContext();
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+
+            response.getWriter().write(
+                    "{\"error\":\"Invalid or expired JWT\"}"
+            );
+
+            return;
+        }
+        System.out.println(
+        	    "DEBUG Before continuing: " +
+        	    SecurityContextHolder.getContext().getAuthentication().getName()
+        	);
         filterChain.doFilter(request, response);
+
     }
   }
